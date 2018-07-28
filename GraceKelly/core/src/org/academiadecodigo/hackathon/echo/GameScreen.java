@@ -19,40 +19,40 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class GameScreen implements Screen {
 
-    final GKGame game;
+    private final GKGame game;
 
-    Texture graceImageRight;
-    Texture graceImageLeft;
-    Texture graceImage;
+    private Texture graceImageRight;
+    private Texture graceImageLeft;
+    private Texture graceImage;
 
-    Texture key;
-    Texture closet;
-    Rectangle objectRect;
-    Texture objectText;
+    private Texture key;
+    private Texture closet;
+    private Rectangle objectRect;
+    private Texture objectText;
 
-    Texture npc;
-    Rectangle npcRect;
+    private Texture npc;
+    private Rectangle npcRect;
 
-    Music music;
-    OrthographicCamera camera;
-    Rectangle grace;
+    private Music music;
+    private OrthographicCamera camera;
+    private Rectangle grace;
 
-    TiledMap mapTile;
-    OrthogonalTiledMapRenderer renderer;
+    private TiledMap mapTile;
+    private OrthogonalTiledMapRenderer renderer;
 
-    boolean jump;
-    boolean canJump;
+    private boolean jump;
+    private boolean canJump;
 
-    float base;
+    private float base;
 
-    final int imageSize = 40;
+    private final int imageSize = 40;
 
-    final Levels level;
+    private final Levels level;
     private Texture graceImageRightKelly;
     private Texture graceImageLeftKelly;
 
-    boolean hasKey;
-    boolean isKelly;
+    private boolean hasKey;
+    private boolean isKelly;
     private Sound keySound;
     private Sound kissSound;
     private Sound teleportSound;
@@ -73,25 +73,26 @@ public class GameScreen implements Screen {
         createTextures();
         createMusic();
         createObjects();
-
     }
 
     private void createObjects() {
-        grace = GameObjectsFactory.makeObject(420, 150, imageSize);
+
+        grace = GameObjectsFactory.makeObject(420, 1500, imageSize);
         objectRect = GameObjectsFactory.makeObject(level.keyX, level.keyY, imageSize);
         npcRect = GameObjectsFactory.makeObject(level.npcX, level.npcY, imageSize);
     }
 
     private void createMusic() {
 
-        keySound = Gdx.audio.newSound(Gdx.files.internal("keySound.wav"));
-        kissSound = Gdx.audio.newSound(Gdx.files.internal("kiss.wav"));
-        teleportSound = Gdx.audio.newSound(Gdx.files.internal("teleport.wav"));
+        keySound = Gdx.audio.newSound(Gdx.files.internal(GameProperties.KEY_SOUND));
+        kissSound = Gdx.audio.newSound(Gdx.files.internal(GameProperties.KISS_SOUND));
+        teleportSound = Gdx.audio.newSound(Gdx.files.internal(GameProperties.TELEPORT_SOUND));
         music = Gdx.audio.newMusic(Gdx.files.internal(GameProperties.MUSIC));
         music.setLooping(true);
     }
 
     private void createTextures() {
+
         graceImageRight = new Texture(Gdx.files.internal(GameProperties.GK_RIGHT));
         graceImageLeft = new Texture(Gdx.files.internal(GameProperties.GK_LEFT));
 
@@ -114,9 +115,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
         music.play();
-
     }
 
     @Override
@@ -129,9 +128,7 @@ public class GameScreen implements Screen {
         renderer.render();
 
         setUpBash();
-
         checkInputs();
-
         movement(delta);
 
         camera.position.set(grace.x, camera.viewportHeight / 2f, 0);
@@ -143,6 +140,7 @@ public class GameScreen implements Screen {
     }
 
     private void checkCollision() {
+
         for (MapObject object : mapTile.getLayers().get("ground").getObjects().getByType(RectangleMapObject.class)) {
 
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -157,7 +155,6 @@ public class GameScreen implements Screen {
                 grace.y = base + 150;
                 jump = false;
             }
-
         }
 
         if (grace.overlaps(objectRect)) {
@@ -177,17 +174,17 @@ public class GameScreen implements Screen {
 
 
             switch (level) {
-                case LEVEL_1:
 
+                case LEVEL_1:
                     game.setScreen(new GameScreen(game, Levels.LEVEL_2));
                     dispose();
                     break;
-                default:
 
+                default:
                     kissSound.play();
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println(e.getMessage());
                     }
@@ -200,6 +197,7 @@ public class GameScreen implements Screen {
     }
 
     private void movement(float delta) {
+
         grace.y = jump ?
                 grace.y + GameProperties.MOVEMENT_SPEED * delta :
                 grace.y - GameProperties.MOVEMENT_SPEED * delta;
@@ -212,7 +210,8 @@ public class GameScreen implements Screen {
             grace.x = 5190;
         }
 
-        if (grace.y < 0) {
+        if (grace.y < -250) {
+            System.out.println("passou no grace < -100");
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
@@ -225,6 +224,7 @@ public class GameScreen implements Screen {
     }
 
     private void checkInputs() {
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
                 || Gdx.input.isKeyPressed(Input.Keys.A)) {
             grace.x -= GameProperties.MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
@@ -249,39 +249,35 @@ public class GameScreen implements Screen {
     }
 
     private void setUpBash() {
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
-        game.batch.draw(graceImage, grace.x, grace.y, grace.width, grace.height);
-        game.batch.draw(objectText, objectRect.x, objectRect.y, objectRect.width, objectRect.height);
-        game.batch.draw(npc, npcRect.x, npcRect.y, npcRect.width, npcRect.height);
-        game.batch.end();
+
+        game.getBatch().setProjectionMatrix(camera.combined);
+        game.getBatch().begin();
+        game.getBatch().draw(graceImage, grace.x, grace.y, grace.width, grace.height);
+        game.getBatch().draw(objectText, objectRect.x, objectRect.y, objectRect.width, objectRect.height);
+        game.getBatch().draw(npc, npcRect.x, npcRect.y, npcRect.width, npcRect.height);
+        game.getBatch().end();
     }
 
     @Override
-    public void resize(int width, int height) {
-
-    }
+    public void resize(int width, int height) {}
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
+
         graceImage.dispose();
         graceImageLeft.dispose();
         graceImageRight.dispose();
+        graceImageLeftKelly.dispose();
+        graceImageRightKelly.dispose();
         key.dispose();
         closet.dispose();
         objectText.dispose();

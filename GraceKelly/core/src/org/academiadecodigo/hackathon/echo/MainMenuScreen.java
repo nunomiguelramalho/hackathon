@@ -11,8 +11,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class MainMenuScreen implements Screen {
 
-    final GKGame game;
-    OrthographicCamera camera;
+    private final GKGame game;
+    private OrthographicCamera camera;
+    private Texture mainScreen;
 
     public MainMenuScreen(GKGame game) {
         this.game = game;
@@ -22,54 +23,43 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public void render(float delta) {
 
         Gdx.gl.glClearColor(0,0,0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
+        game.getBatch().setProjectionMatrix(camera.combined);
+        game.getBatch().begin();
 
-        game.batch.draw(new Texture(Gdx.files.internal("MainScreen.png")), 0, 0 );
-        //game.font.draw(game.batch, "Welcome!!! ", 100, 150);
-        //game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
-        game.batch.end();
+        mainScreen = new Texture(Gdx.files.internal(GameProperties.MAIN_SCREEN));
+
+        game.getBatch().draw(mainScreen, 0, 0 );
+        game.getBatch().end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             game.setScreen(new GameScreen(game, Levels.LEVEL_1));
             dispose();
         }
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
+        mainScreen.dispose();
     }
+
+    @Override
+    public void show() {}
+
+    @Override
+    public void resize(int width, int height) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
 }

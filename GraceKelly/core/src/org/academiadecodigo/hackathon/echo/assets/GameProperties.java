@@ -15,7 +15,10 @@ public class GameProperties {
     public final static String FM_RIGHT = "FreddieMercury_Right.png";
     public final static String NPC = "prince.png";
     public final static String MUSIC = "Mika.mp3";
+    public final static String MAIN_SCREEN = "MainScreen.png";
+    public final static String KEY_SOUND = "keySound.wav";
+    public final static String KISS_SOUND = "kiss.wav";
+    public final static String TELEPORT_SOUND = "teleport.wav";
 
     public final static float MOVEMENT_SPEED = 500;
-
 }
